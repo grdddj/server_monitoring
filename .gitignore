@@ -1,0 +1,6 @@
+__pycache__
+*.log
+*.json
+!*.mock.json
+*.service
+!*template.service

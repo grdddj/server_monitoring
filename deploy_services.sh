@@ -5,7 +5,7 @@ set -e
 current_dir=$(pwd)
 
 # List of services to deploy
-services=("auth_monitor" "login_monitor")
+services=("auth_monitor" "login_monitor" "ufw_block_monitor")
 
 for service in "${services[@]}"; do
     # Create the service files from templates

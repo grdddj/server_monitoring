@@ -11,8 +11,8 @@ PATTERNS = ["preauth"]
 
 # GOOD login = "Accepted publickey" or "Accepted password"
 
-names = defaultdict(int)
-ips = defaultdict(int)
+names: dict[str, int] = defaultdict(int)
+ips: dict[str, int] = defaultdict(int)
 
 ip_pattern = re.compile(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
 user_pattern = re.compile(r" user (\w+) ")
@@ -22,13 +22,13 @@ def main():
     with open(FILE) as f:
         for line in f:
             if any(pattern in line for pattern in PATTERNS):
-                ip = ip_pattern.search(line)
-                if ip:
-                    ips[ip.group()] += 1
+                match_ip = ip_pattern.search(line)
+                if match_ip:
+                    ips[match_ip.group()] += 1
 
-                name = user_pattern.search(line)
-                if name:
-                    names[name.group(1)] += 1
+                match_name = user_pattern.search(line)
+                if match_name:
+                    names[match_name.group(1)] += 1
 
     print("IPs:")
     ips_sorted = sorted(ips.items(), key=lambda x: x[1])

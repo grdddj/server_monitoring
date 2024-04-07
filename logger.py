@@ -15,7 +15,7 @@ class JsonFormatter(logging.Formatter):
                 **message_data,
             }
         except Exception:
-            log_record: Dict[str, Any] = {
+            log_record = {
                 "date": self.formatTime(record, self.datefmt),
                 "level": record.levelname,
                 "message": message,

@@ -19,6 +19,7 @@ def yield_file_lines(file_path: str, logger: logging.Logger) -> Iterator[str]:
                     logger.info(
                         {
                             "event": "FileRotated",
+                            "file": file_path,
                             "size": current_size,
                             "last_known_size": last_known_size,
                         }

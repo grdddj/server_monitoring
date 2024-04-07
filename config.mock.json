@@ -1,0 +1,6 @@
+{
+  "pushbullet_token": "o.1234",
+  "login_interval_seconds": 1,
+  "known_ips": ["1.2.3.4"],
+  "server_name": "PROD1"
+}

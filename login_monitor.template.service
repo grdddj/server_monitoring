@@ -1,0 +1,13 @@
+[Unit]
+Description=Login Monitoring service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 __DIR__/login_monitor.py
+WorkingDirectory=__DIR__
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

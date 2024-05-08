@@ -26,7 +26,8 @@ def analyze_line(line: str) -> None:
     if match:
         ip = match.group(1)
         port = match.group(2)
-        # TODO: add a possibility to conditionally block the IP
+        # TODO: add a possibility to conditionally block the IP (when it makes a lot of requests, or request to a specific port, etc.)
+        # TODO: find out a flood of requests from the same IP and block it
         event = {
             "event": "UFWBlock",
             "ip": ip,

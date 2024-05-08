@@ -4,6 +4,7 @@ import time
 from typing import Iterator
 
 
+# TODO: could do some tests of functionality
 def yield_file_lines(file_path: str, logger: logging.Logger) -> Iterator[str]:
     """Monitor /var/log/auth.log for new login attempts and authentications, accounting for log rotation."""
     start_from_beginning = False

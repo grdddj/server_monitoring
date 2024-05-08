@@ -30,15 +30,15 @@ def main():
                 if match_name:
                     names[match_name.group(1)] += 1
 
-    print("IPs:")
-    ips_sorted = sorted(ips.items(), key=lambda x: x[1])
-    for ip, count in ips_sorted:
-        print(f"{ip}: {count}")
-
     print("Names:")
     names_sorted = sorted(names.items(), key=lambda x: x[1])
     for name, count in names_sorted:
         print(f"{name}: {count}")
+
+    print("IPs:")
+    ips_sorted = sorted(ips.items(), key=lambda x: x[1])
+    for ip, count in ips_sorted:
+        print(f"{ip}: {count}")
 
     print("Total failed login attempts:", sum(ips.values()))
 

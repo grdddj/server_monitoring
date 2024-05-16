@@ -1,5 +1,7 @@
 import re
+import time
 from pathlib import Path
+from typing import TypedDict
 
 from common import yield_file_lines
 from config import load_config
@@ -22,6 +24,25 @@ unauthorized_pattern = re.compile(
     r" user (\w+) (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) .*preauth"
 )
 
+last_messages: dict[str, float] = {}
+
+
+class Event(TypedDict):
+    event: str
+    name: str
+    ip: str
+
+
+def send_message_deduplicate(title: str, event: Event, seconds: int) -> None:
+    user_name = event["name"]
+    user_ip = event["ip"]
+    last_message = last_messages.get(user_name, 0)
+    now = time.time()
+    if now - last_message > seconds:
+        last_messages[user_name] = now
+        text = f"{user_name} from {user_ip}"
+        send_pushbullet_message(title, text)
+
 
 def monitor_and_report() -> None:
     for line in yield_file_lines(FILE, logger=logger):
@@ -33,23 +54,27 @@ def monitor_and_report() -> None:
 
 def analyze_line(line: str) -> None:
     if password_pattern in line:
-        send_pushbullet_message("Password login detected", line)
+        send_pushbullet_message("ERROR: Password login detected", line)
         logger.warning(line)
 
     match_login = login_pattern.search(line)
     if match_login:
         config = load_config()
 
-        name = match_login.group(1)
-        ip = match_login.group(2)
+        name: str = match_login.group(1)
+        ip: str = match_login.group(2)
         if ip not in config.known_ips:
-            event = {
+            event: Event = {
                 "event": "UnknownIPAddressLogin",
                 "name": name,
                 "ip": ip,
             }
             logger.warning(event)
-            send_pushbullet_message(f"{config.server_name} unknown IP", event)
+            send_message_deduplicate(
+                f"{config.server_name} - WARNING: unknown IP",
+                event,
+                config.deduplicate_seconds,
+            )
         else:
             event = {
                 "event": "KnownIPAddressLogin",
@@ -57,6 +82,11 @@ def analyze_line(line: str) -> None:
                 "ip": ip,
             }
             logger.info(event)
+            send_message_deduplicate(
+                f"{config.server_name} login",
+                event,
+                config.deduplicate_seconds,
+            )
 
     match_unauthorized = unauthorized_pattern.search(line)
     if match_unauthorized:

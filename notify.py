@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import requests
+import requests  # type: ignore
 
 from config import load_config
 from logger import get_json_logger

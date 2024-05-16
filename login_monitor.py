@@ -5,7 +5,6 @@ from typing import Set
 
 from config import load_config
 from logger import get_json_logger
-from notify import send_pushbullet_message
 
 logger = get_json_logger(Path(__file__).with_suffix(".log"))
 config = load_config()
@@ -33,7 +32,6 @@ def monitor_logins(interval: int):
                 # user    pts/4        1.2.3.4     Sat Apr  6 22:37   still logged in
                 name = login.split()[0]
                 ip = login.split()[2]
-                message = f"{name} from {ip}"
                 logger.info(
                     {
                         "event": "NewLogin",
@@ -41,7 +39,6 @@ def monitor_logins(interval: int):
                         "ip": ip,
                     }
                 )
-                send_pushbullet_message(f"{config.server_name} login", message)
 
         known_logins = current_logins
 
